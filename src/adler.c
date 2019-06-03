@@ -6,8 +6,10 @@
 
 const uint32_t MOD_ADLER = 65521;
 
-/* Compute Adler32 checksum */
-uint32_t adler32(unsigned char *data, size_t len) {
+const adler32_t ADLER32_INITIALIZER = { .a = 1, .b = 0 };
+
+/* Compute Adler-32 checksum */
+uint32_t adler32(unsigned char * data, size_t len) {
     uint32_t a = 1, b = 0;
     size_t index;
 
@@ -18,4 +20,25 @@ uint32_t adler32(unsigned char *data, size_t len) {
     }
 
     return (b << 16) | a;
+}
+
+/* Initialize Adler-32 context */
+void adler32_init(adler32_t * ctx) {
+    *ctx = ADLER32_INITIALIZER;
+}
+
+/* Compute partial Adler-32 checksum */
+void adler32_update(adler32_t * ctx, unsigned char * data, size_t len) {
+    size_t index;
+
+    // Process each byte of the data in order
+    for (index = 0; index < len; ++index) {
+        ctx->a = (ctx->a + data[index]) % MOD_ADLER;
+        ctx->b = (ctx->b + ctx->a) % MOD_ADLER;
+    }
+}
+
+/* Return the Adler-32 message digest */
+uint32_t adler32_final(const adler32_t * ctx) {
+    return (ctx->b << 16) | ctx->a;
 }

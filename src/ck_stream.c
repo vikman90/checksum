@@ -2,29 +2,21 @@
 
 #include "checksum.h"
 
+#ifndef BLOCKSIZE
+#define BLOCKSIZE 65536
+#elif BLOCKSIZE < 1
+#error The block size must be a positive number.
+#endif
+
 /* Compute checksum via file streaming */
 uint32_t ck_stream(int fd) {
-    struct stat buf;
-    unsigned char * data;
-    uint32_t checksum;
+    unsigned char data[BLOCKSIZE];
+    adler32_t ctx = ADLER32_INITIALIZER;
+    ssize_t size;
 
-    if (fstat(fd, &buf) == -1) {
-        perror("stat");
-        abort();
+    while ((size = read(fd, data, BLOCKSIZE)) > 0) {
+        adler32_update(&ctx, data, size);
     }
 
-    data = malloc(buf.st_size);
-    if (data == NULL) {
-        perror("Cannot allocate memory enough");
-        abort();
-    }
-
-    if (read(fd, data, buf.st_size) == -1) {
-        perror("Cannot read data from file");
-        abort();
-    }
-
-    checksum = adler32(data, buf.st_size);
-    free(data);
-    return checksum;
+    return adler32_final(&ctx);
 }

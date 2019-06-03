@@ -1,5 +1,5 @@
 # checksum
-File checksum using Adler32 algorithm
+File checksum using Adler32 algorithm.
 
 ## Introduction
 
@@ -14,11 +14,27 @@ This project aims to compare the performance, pros and cons of reading a file as
 
 Just checkout this project and run `make`.
 
+```
+make [ BLOCKSIZE=x ]
+```
+
+|Option|Description|Range|Default|
+|---|---|---|---|
+|`BLOCKSIZE`|Stream reader block size.|Positive number.|65536|
+
+### Clean project
+
+```
+make clean
+```
+
 ## Run
 
 ```
-checksum [ -h ] [ -m ] <file>
+checksum [ -h ] [ -m ] [ file ]
 ```
+
+If no file specified or file "-" is given, checksum reads _stdin_.
 
 |Option|Description|
 |---|---|
@@ -27,19 +43,19 @@ checksum [ -h ] [ -m ] <file>
 
 ## Performance test
 
-1. 500 MB file checksum.
+### Version 0.1
 
-|Method|Time|
-|---|---|
-|File streaming|6.817 s|
-|Memory mapping|2.830 s|
+|Method|500 MB file|1500 MB file|
+|---|---|---|
+|File streaming|6.817 s|_Memory error._|
+|Memory mapping|2.830 s|8.367 s|
 
-2. 1.5 GB file checksum.
+### Version 0.2
 
-|Method|Time|
-|---|---|
-|File streaming|_Memory error._|
-|Memory mapping|8.367 s|
+|Method|500 MB file|1500 MB file|
+|---|---|---|
+|File streaming|2.366 s|7.483 s|
+|Memory mapping|2.966 s|8.640 s|
 
 ## References
 

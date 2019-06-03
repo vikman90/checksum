@@ -18,10 +18,14 @@ int main(int argc, char ** argv) {
 
     parse_options(argc, argv);
 
-    fd = open(file_name, O_RDONLY);
-    if (fd == -1) {
-        perror("Cannot open file");
-        return EXIT_FAILURE;
+    if (file_name) {
+        fd = open(file_name, O_RDONLY);
+        if (fd == -1) {
+            perror("Cannot open file");
+            return EXIT_FAILURE;
+        }
+    } else {
+        fd = STDIN_FILENO;
     }
 
     switch (method) {
@@ -69,18 +73,20 @@ void parse_options(int argc, char ** argv) {
         }
     }
 
-    if (optind == argc) {
-        help(EXIT_FAILURE);
+    if (optind < argc && strcmp(argv[optind], "-")) {
+        file_name = argv[optind];
+    } else if (method == METH_MMAP) {
+        fprintf(stderr, "WARN: Standard input does not support memory mapping.\n");
+        method = METH_STREAM;
     }
-
-    file_name = argv[optind];
 }
 
 /* Show help and exit */
 void help(int status) {
     printf(
         "File checksum - version " VERSION "\n"
-        "Usage: checksum [ -h ] [ -m ] <file>\n"
+        "Usage: checksum [ -h ] [ -m ] [ file ]\n"
+        "   If no file specified or file \"-\" is given, checksum reads stdin.\n"
         "Options:\n"
         "   -h  Show this help.\n"
         "   -m  Use memory mapping method.\n"
