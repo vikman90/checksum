@@ -22,6 +22,7 @@ make [ BLOCKSIZE=x ]
 |---|---|---|---|
 |`BLOCKSIZE`|Stream reader block size.|Positive number.|65536|
 |`DEBUG`|Enable debug mode.|Anything.|Undefined.|
+|`SANITIZE`|Enable AddressSanitizer.|Anything.|Undefined.|
 
 ### Clean project
 

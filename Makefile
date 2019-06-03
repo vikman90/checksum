@@ -4,6 +4,7 @@
 #   Options:
 #     BLOCKSIZE             Block size for stream reader.
 #     DEBUG                 Enable debug mode.
+#     SANITIZE              Enable AddressSanitizer.
 
 DEFINES = -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
 CFLAGS = -std=c99 -pipe $(DEFINES)
@@ -14,6 +15,10 @@ endif
 
 ifdef DEBUG
 CFLAGS += -g -Wall -Wextra
+ifdef SANITIZE
+CFLAGS += -fsanitize=address
+LFLAGS += -fsanitize=address
+endif
 else
 CFLAGS += -DNDEBUG -O2
 LFLAGS += -O2
