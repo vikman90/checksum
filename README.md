@@ -21,6 +21,7 @@ make [ BLOCKSIZE=x ]
 |Option|Description|Range|Default|
 |---|---|---|---|
 |`BLOCKSIZE`|Stream reader block size.|Positive number.|65536|
+|`DEBUG`|Enable debug mode.|Anything.|Undefined.|
 
 ### Clean project
 

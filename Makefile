@@ -3,13 +3,20 @@
 # make clean                Clean binary and objects.
 #   Options:
 #     BLOCKSIZE             Block size for stream reader.
+#     DEBUG                 Enable debug mode.
 
 DEFINES = -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
-CFLAGS = -O2 -std=c99 -pipe -Wall -Wextra $(DEFINES)
-LFLAGS = -O2
+CFLAGS = -std=c99 -pipe $(DEFINES)
 
 ifdef BLOCKSIZE
 CFLAGS += -DBLOCKSIZE="$(BLOCKSIZE)"
+endif
+
+ifdef DEBUG
+CFLAGS += -g -Wall -Wextra
+else
+CFLAGS += -DNDEBUG -O2
+LFLAGS += -O2
 endif
 
 TARGET = checksum

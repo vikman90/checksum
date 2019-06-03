@@ -8,6 +8,8 @@ uint32_t ck_mmap(int fd) {
     unsigned char * data;
     uint32_t checksum;
 
+    assert(fd > 0);
+
     if (fstat(fd, &buf) == -1) {
         perror("stat");
         abort();
