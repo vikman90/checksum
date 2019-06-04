@@ -66,3 +66,8 @@ uint32_t adler32_final(const adler32_t * ctx) {
     assert(ctx != NULL);
     return (ctx->b << 16) | ctx->a;
 }
+
+/* Merge two partial checksum contexts */
+void adler32_append(adler32_t * c1, const adler32_t * c2) {
+    /* TODO */
+}

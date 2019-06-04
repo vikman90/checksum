@@ -13,6 +13,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 
 #define VERSION "0.3"
 
@@ -36,6 +37,9 @@ void adler32_update(adler32_t * ctx, unsigned char * data, size_t len);
 
 /* Return the Adler-32 message digest */
 uint32_t adler32_final(const adler32_t * ctx);
+
+/* Merge two partial checksum contexts */
+void adler32_append(adler32_t * c1, const adler32_t * c2);
 
 /* Compute checksum via file streaming */
 uint32_t ck_stream(int fd);

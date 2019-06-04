@@ -7,7 +7,8 @@
 #     SANITIZE              Enable AddressSanitizer.
 
 DEFINES = -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
-CFLAGS = -std=c99 -pipe $(DEFINES)
+CFLAGS = -std=c99 -pthread -pipe $(DEFINES)
+LFLAGS = -pthread
 
 ifdef BLOCKSIZE
 CFLAGS += -DBLOCKSIZE="$(BLOCKSIZE)"
