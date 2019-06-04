@@ -62,6 +62,13 @@ If no file specified or file "-" is given, checksum reads _stdin_.
 |File streaming|2.366 s|7.483 s|
 |Memory mapping|2.966 s|8.640 s|
 
+### Version 0.3
+
+|Method|500 MB file|1500 MB file|
+|---|---|---|
+|File streaming|0.682 s|2.076 s|
+|Memory mapping|1.032 s|3.502 s|
+
 ## References
 
 - Wikipedia: [Adler-32](https://en.wikipedia.org/wiki/Adler-32)

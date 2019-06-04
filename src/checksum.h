@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define VERSION "0.2"
+#define VERSION "0.3"
 
 typedef enum { METH_STREAM, METH_MMAP } method_t;
 
