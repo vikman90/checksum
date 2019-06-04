@@ -1,4 +1,7 @@
 # checksum
+
+[![Build Status](https://travis-ci.com/vikman90/checksum.svg?branch=master)](https://travis-ci.com/vikman90/checksum)
+
 File checksum using Adler32 algorithm.
 
 ## Introduction
