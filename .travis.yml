@@ -1,3 +1,9 @@
 language: c
+compiler:
+  - gcc
+before_install:
+  - pip install --user cpp-coveralls
 script:
-  - make && tests/run.test
+  - make DEBUG=1 COVERAGE=1 && tests/run.test
+after_success:
+  - coveralls

@@ -1,6 +1,7 @@
 # checksum
 
 [![Build Status](https://travis-ci.com/vikman90/checksum.svg?branch=master)](https://travis-ci.com/vikman90/checksum)
+[![Coverage Status](https://coveralls.io/repos/github/vikman90/checksum/badge.svg?branch=master)](https://coveralls.io/github/vikman90/checksum?branch=master)
 
 File checksum using Adler32 algorithm.
 
@@ -26,6 +27,7 @@ make [ BLOCKSIZE=x ]
 |`BLOCKSIZE`|Stream reader block size.|Positive number.|65536|
 |`DEBUG`|Enable debug mode.|Anything.|Undefined.|
 |`SANITIZE`|Enable AddressSanitizer.|Anything.|Undefined.|
+|`COVERAGE`|Enable coverage test.|Anything.|Undefined.|
 
 ### Clean project
 

@@ -4,7 +4,8 @@
 #   Options:
 #     BLOCKSIZE             Block size for stream reader.
 #     DEBUG                 Enable debug mode.
-#     SANITIZE              Enable AddressSanitizer.
+#     SANITIZE              Enable AddressSanitizer (requires DEBUG).
+#     COVERAGE              Enable coverage test (requires DEBUG).
 
 DEFINES = -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
 CFLAGS = -std=c99 -pipe $(DEFINES)
@@ -18,6 +19,10 @@ CFLAGS += -g -Wall -Wextra
 ifdef SANITIZE
 CFLAGS += -fsanitize=address
 LFLAGS += -fsanitize=address
+endif
+ifdef COVERAGE
+CFLAGS += --coverage
+LFLAGS += --coverage
 endif
 else
 CFLAGS += -DNDEBUG -O2
