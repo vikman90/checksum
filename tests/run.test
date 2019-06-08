@@ -1,0 +1,40 @@
+#! /bin/bash
+
+CHECKSUM="../checksum"
+RAND="/dev/urandom"
+NULL="/dev/null"
+TEMP=$(mktemp)
+
+cd ${0%/*} || exit 1
+
+## Setup
+
+rm -f $TEMP
+
+for i in {1..200}
+do
+    echo "Lorem ipsum dolor sit amet" >> $TEMP
+done
+
+echo 1..5
+
+# Test
+
+($CHECKSUM -h | grep "File checksum - version" > $NULL) || echo -n "not "
+echo "ok - Print program help"
+
+[ $(echo "Hello World" | $CHECKSUM) = "1c320427" ] || echo -n "not "
+echo "ok - String checksum"
+
+[ $($CHECKSUM $TEMP) = "bf33a95a" ] || echo -n "not "
+echo "ok - Checksum of 5.4 KB file"
+
+[ $($CHECKSUM -m $TEMP) = "bf33a95a" ] || echo -n "not "
+echo "ok - Checksum of 5.4 KB file using memory mapping"
+
+(head --bytes=1000000000 $RAND | $CHECKSUM - > $NULL) || echo -n "not "
+echo "ok - Checksum of 1 GB random data"
+
+# Teardown
+
+rm $TEMP
