@@ -1,2 +1,4 @@
 checksum
 src/*.o
+
+.vscode
