@@ -14,7 +14,7 @@ do
     echo "Lorem ipsum dolor sit amet" >> $TEMP
 done
 
-echo 1..5
+echo 1..8
 
 # Test
 
@@ -32,6 +32,15 @@ echo "ok - Checksum of 5.4 KB file using memory mapping"
 
 (head --bytes=1000000000 $RAND | $CHECKSUM - > $NULL) || echo -n "not "
 echo "ok - Checksum of 1 GB random data"
+
+($CHECKSUM -a < $NULL 2>&1 > $NULL | grep "invalid option") || echo -n "not "
+echo "ok - Ignore an invalid option"
+
+($CHECKSUM /none 2>&1 > $NULL | grep "Cannot open file") || echo -n "not "
+echo "ok - Missing file error"
+
+($CHECKSUM -m < $NULL 2>&1 > $NULL | grep "WARN: Standard input does not support memory mapping") || echo -n "not "
+echo "ok - Do not allow memory mapping on stdin"
 
 # Teardown
 
