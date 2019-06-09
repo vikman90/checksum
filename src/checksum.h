@@ -58,6 +58,12 @@ int ck_cmp_mmap(int fd1, int fd2);
 /* Get size of a file descriptor */
 off_t ck_fsize(int fd);
 
+/* Check that a file descriptor is a regular file */
+int ck_fregular(int fd);
+
+/* Open a file descriptor */
+int ck_open(const char * pathname);
+
 /* Print error and abort */
 __attribute__((noreturn)) void ck_error(const char * s);
 

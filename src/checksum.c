@@ -15,6 +15,32 @@ off_t ck_fsize(int fd) {
     return buf.st_size;
 }
 
+/* Check that a file descriptor is a regular file */
+int ck_fregular(int fd) {
+    struct stat buf;
+
+    if (fstat(fd, &buf) == -1) {
+        ck_error("stat");
+    }
+
+    return S_ISREG(buf.st_mode);
+}
+
+/* Open a file descriptor */
+int ck_open(const char * pathname) {
+    if (pathname) {
+        int fd = open(pathname, O_RDONLY);
+        if (fd == -1) {
+            perror("ERROR: Cannot open file");
+            exit(EXIT_FAILURE);
+        } else {
+            return fd;
+        }
+    } else {
+        return STDIN_FILENO;
+    }
+}
+
 /* Print error and abort */
 void ck_error(const char * s) {
     assert(s != NULL);

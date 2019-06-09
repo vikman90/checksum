@@ -42,11 +42,11 @@ echo "ok - Checksum of 1 GB random data"
 ($CHECKSUM -a < $NULL 2>&1 > $NULL | grep "invalid option") || echo -n "not "
 echo "ok - Ignore an invalid option"
 
-($CHECKSUM /none 2>&1 > $NULL | grep "Cannot open file") || echo -n "not "
+($CHECKSUM /none 2>&1 > $NULL | grep "ERROR: Cannot open file") || echo -n "not "
 echo "ok - Missing file error"
 
-($CHECKSUM -m < $NULL 2>&1 > $NULL | grep "WARN: Standard input does not support memory mapping") || echo -n "not "
-echo "ok - Do not allow memory mapping on stdin"
+($CHECKSUM -m < $NULL 2>&1 > $NULL | grep "WARN: Memory mapping requires regular files") || echo -n "not "
+echo "ok - Require regular files on memory mapping"
 
 [ "$($CHECKSUM -c < $TEMP2 $TEMP3)" = "Files are different" ] || echo -n "not "
 echo "ok - Compare a file with stdin"
@@ -57,10 +57,10 @@ echo "ok - Compare two similar files using memory mapping"
 [ "$($CHECKSUM -cm $TEMP1 $TEMP2)" = "Files are different" ] || echo -n "not "
 echo "ok - Compare two files with different size using memory mapping"
 
-($CHECKSUM -cm $TEMP1 - < $NULL 2>&1 > $NULL | grep "WARN: Standard input does not support memory mapping") || echo -n "not "
-echo "ok - Do not allow memory mapping to compare a file with stdin"
+($CHECKSUM -cm $TEMP1 - < $NULL 2>&1 > $NULL | grep "WARN: Memory mapping requires regular files") || echo -n "not "
+echo "ok - Require regular files on memory mapping for file comparison"
 
-($CHECKSUM -c $TEMP1 /none 2>&1 > $NULL | grep "Cannot open file") || echo -n "not "
+($CHECKSUM -c $TEMP1 /none 2>&1 > $NULL | grep "ERROR: Cannot open file") || echo -n "not "
 echo "ok - Missing second file error"
 
 ($CHECKSUM -c 2>&1 > $NULL | grep "ERROR: File not defined") || echo -n "not "

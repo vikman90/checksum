@@ -5,8 +5,7 @@
 static const char * file_name;
 static const char * file_name_cmp;
 static action_t action = ACTION_CHECKSUM;
-uint32_t (* ck_callback)(int);
-int (* ck_cmp_callback)(int, int);
+static method_t method = METH_STREAM;
 
 /* Parse arguments */
 static void parse_options(int argc, char ** argv);
@@ -21,37 +20,27 @@ int main(int argc, char ** argv) {
 
     parse_options(argc, argv);
 
-    if (file_name) {
-        fd = open(file_name, O_RDONLY);
-        if (fd == -1) {
-            perror("Cannot open file");
-            return EXIT_FAILURE;
-        }
-    } else {
-        fd = STDIN_FILENO;
-    }
+    fd = ck_open(file_name);
 
     switch (action) {
     case ACTION_CHECKSUM:
-        assert(ck_callback != NULL);
-        printf("%x\n", ck_callback(fd));
+        if (method == METH_MMAP && !ck_fregular(fd)) {
+            fprintf(stderr, "WARN: Memory mapping requires regular files\n");
+            method = METH_STREAM;
+        }
+
+        printf("%x\n", method == METH_STREAM ? ck_stream(fd) : ck_mmap(fd));
         break;
 
     case ACTION_COMPARE:
-        assert(ck_cmp_callback != NULL);
-        assert(fd != STDIN_FILENO);
-
-        if (file_name_cmp) {
-            fd_cmp = open(file_name_cmp, O_RDONLY);
-            if (fd_cmp == -1) {
-                perror("Cannot open file");
-                return EXIT_FAILURE;
-            }
-        } else {
-            fd_cmp = STDIN_FILENO;
+        fd_cmp = ck_open(file_name_cmp);
+        if (method == METH_MMAP && !(ck_fregular(fd) && ck_fregular(fd_cmp))) {
+            fprintf(stderr, "WARN: Memory mapping requires regular files\n");
+            method = METH_STREAM;
         }
 
-        printf("%s\n", ck_cmp_callback(fd, fd_cmp) ? "Files are different" : "Files are similar");
+        int answer = method == METH_STREAM ? ck_cmp_stream(fd, fd_cmp) : ck_cmp_mmap(fd, fd_cmp);
+        printf("%s\n", answer ? "Files are different" : "Files are similar");
         close(fd_cmp);
         break;
 
@@ -66,7 +55,6 @@ int main(int argc, char ** argv) {
 /* Parse arguments */
 void parse_options(int argc, char ** argv) {
     int c;
-    static method_t method = METH_STREAM;
 
     while ((c = getopt(argc, argv, "chm")) != -1) {
         switch (c) {
@@ -96,12 +84,8 @@ void parse_options(int argc, char ** argv) {
     case ACTION_CHECKSUM:
         if (optind < argc && strcmp(argv[optind], "-")) {
             file_name = argv[optind];
-        } else if (method == METH_MMAP) {
-            fprintf(stderr, "WARN: Standard input does not support memory mapping.\n");
-            method = METH_STREAM;
         }
 
-        ck_callback = method == METH_STREAM ? ck_stream : ck_mmap;
         break;
 
     case ACTION_COMPARE:
@@ -116,12 +100,8 @@ void parse_options(int argc, char ** argv) {
 
         if (optind < argc && strcmp(argv[optind], "-")) {
             file_name_cmp = argv[optind];
-        } else if (method == METH_MMAP) {
-            fprintf(stderr, "WARN: Standard input does not support memory mapping.\n");
-            method = METH_STREAM;
         }
 
-        ck_cmp_callback = method == METH_STREAM ? ck_cmp_stream : ck_cmp_mmap;
         break;
 
     default:
