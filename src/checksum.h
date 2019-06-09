@@ -3,6 +3,10 @@
 #ifndef CHECKSUM_H
 #define CHECKSUM_H
 
+#ifdef HAVE_CONFIG_H
+#include "../config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -13,8 +17,6 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
-
-#define VERSION "0.3"
 
 typedef enum { METH_STREAM, METH_MMAP } method_t;
 

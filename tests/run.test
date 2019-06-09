@@ -1,11 +1,9 @@
 #! /bin/bash
 
-CHECKSUM="../checksum"
+CHECKSUM="../src/checksum"
 RAND="/dev/urandom"
 NULL="/dev/null"
 TEMP=$(mktemp)
-
-cd ${0%/*} || exit 1
 
 ## Setup
 

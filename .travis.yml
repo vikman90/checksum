@@ -4,6 +4,6 @@ compiler:
 before_install:
   - pip install --user cpp-coveralls
 script:
-  - make DEBUG=1 COVERAGE=1 && tests/run.test
+  - autoreconf -vi && ./configure --enable-gcov && make && make check
 after_success:
-  - coveralls
+  - coveralls --exclude tests

@@ -16,20 +16,47 @@ This project aims to compare the performance, pros and cons of reading a file as
 
 ## Build
 
-Just checkout this project and run `make`.
+```
+autoreconf -vi
+./configure [ OPTIONS ]
+make
+```
 
-```
-make [ BLOCKSIZE=x ]
-```
+### Optional features
+
+|Feature|Description|
+|---|---|
+|`--disable-assert`|Turn off assertions.|
+|`--enable-sanitize`|Enable AddressSanitizer.|
+|`--enable-coverage`|Enable coverage test.|
+
+### Environment variables
 
 |Option|Description|Range|Default|
 |---|---|---|---|
 |`BLOCKSIZE`|Stream reader block size.|Positive number.|65536|
-|`DEBUG`|Enable debug mode.|Anything.|Undefined.|
-|`SANITIZE`|Enable AddressSanitizer.|Anything.|Undefined.|
-|`COVERAGE`|Enable coverage test.|Anything.|Undefined.|
 
-### Clean project
+## Install
+
+- Standard installation:
+
+```
+make install
+```
+
+- Optimize installation:
+
+```
+make install-strip
+```
+
+## Uninstall
+
+```
+make uninstall
+```
+
+## Clean project
 
 ```
 make clean
