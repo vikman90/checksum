@@ -20,7 +20,7 @@ head -c1M $RAND > $TEMP2
 head -c512K $TEMP2 > $TEMP3
 head -c512K $RAND >> $TEMP3
 
-echo 1..12
+echo 1..14
 
 # Test
 
@@ -59,6 +59,12 @@ echo "ok - Compare two files with different size using memory mapping"
 
 ($CHECKSUM -cm $TEMP1 - < $NULL 2>&1 > $NULL | grep "WARN: Standard input does not support memory mapping") || echo -n "not "
 echo "ok - Do not allow memory mapping to compare a file with stdin"
+
+($CHECKSUM -c $TEMP1 /none 2>&1 > $NULL | grep "Cannot open file") || echo -n "not "
+echo "ok - Missing second file error"
+
+($CHECKSUM -c 2>&1 > $NULL | grep "ERROR: File not defined") || echo -n "not "
+echo "ok - Missing arguments for file comparison"
 
 # Teardown
 
