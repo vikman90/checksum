@@ -12,13 +12,17 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
 
+#define HERE __func__, __FILE__, __LINE__
+
 typedef enum { METH_STREAM, METH_MMAP } method_t;
+typedef enum { ACTION_CHECKSUM, ACTION_COMPARE } action_t;
 
 typedef struct {
     uint32_t a;
@@ -44,5 +48,20 @@ uint32_t ck_stream(int fd);
 
 /* Compute checksum via file mapping */
 uint32_t ck_mmap(int fd);
+
+/* Compare two files via file streaming */
+int ck_cmp_stream(int fd1, int fd2);
+
+/* Compare two files via file mapping */
+int ck_cmp_mmap(int fd1, int fd2);
+
+/* Get size of a file descriptor */
+off_t ck_fsize(int fd);
+
+/* Print error and abort */
+__attribute__((noreturn)) void ck_error(const char * s);
+
+/* Abort due to internal error */
+__attribute__((noreturn)) void ck_abort(const char * func, const char * file, int line);
 
 #endif /* CHECKSUM_H */

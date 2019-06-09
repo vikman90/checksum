@@ -72,6 +72,7 @@ If no file specified or file "-" is given, checksum reads _stdin_.
 
 |Option|Description|
 |---|---|
+|`-c`|Compare two files.|
 |`-h`|Show help.|
 |`-m`|Use memory mapping method.|
 
@@ -97,6 +98,24 @@ If no file specified or file "-" is given, checksum reads _stdin_.
 |---|---|---|
 |File streaming|0.682 s|2.076 s|
 |Memory mapping|1.032 s|3.502 s|
+
+### Version 0.4
+
+Analyzing file comparison times.
+
+#### Best case: different files
+
+|Method|500 MB file|1500 MB file|
+|---|---|---|
+|File streaming|0.001 s|0.001 s|
+|Memory mapping|1.073 s|3.436 s|
+
+#### Worst case: similar files
+
+|Method|500 MB file|1500 MB file|
+|---|---|---|
+|File streaming|0.482 s|1.845 s|
+|Memory mapping|1.568 s|5.639 s|
 
 ## References
 
