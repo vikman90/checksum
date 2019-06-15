@@ -10,7 +10,7 @@ const size_t ADLER_CHUNK = 5222;
 const adler32_t ADLER32_INITIALIZER = { .a = 1, .b = 0 };
 
 /* Compute Adler-32 checksum */
-uint32_t adler32(unsigned char * data, size_t len) {
+void adler32(unsigned char * data, size_t len, unsigned char digest[4]) {
     uint32_t a = 1, b = 0;
     size_t top;
 
@@ -30,7 +30,17 @@ uint32_t adler32(unsigned char * data, size_t len) {
         b %= MOD_ADLER;
     }
 
-    return (b << 16) | a;
+#if __FLOAT_WORD_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    digest[0] = b >> 8;
+    digest[1] = b & 0xFF;
+    digest[2] = a >> 8;
+    digest[3] = a & 0xFF;
+#else
+    digest[0] = a & 0xFF;
+    digest[1] = a >> 8;
+    digest[2] = b & 0xFF;
+    digest[3] = b >> 8;
+#endif
 }
 
 /* Initialize Adler-32 context */
@@ -61,8 +71,19 @@ void adler32_update(adler32_t * ctx, unsigned char * data, size_t len) {
     }
 }
 
-/* Return the Adler-32 message digest */
-uint32_t adler32_final(const adler32_t * ctx) {
+/* Get the Adler-32 message digest */
+void adler32_final(const adler32_t * ctx, unsigned char digest[4]) {
     assert(ctx != NULL);
-    return (ctx->b << 16) | ctx->a;
+
+#if __FLOAT_WORD_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    digest[0] = ctx->b >> 8;
+    digest[1] = ctx->b & 0xFF;
+    digest[2] = ctx->a >> 8;
+    digest[3] = ctx->a & 0xFF;
+#else
+    digest[0] = ctx->a & 0xFF;
+    digest[1] = ctx->a >> 8;
+    digest[2] = ctx->b & 0xFF;
+    digest[3] = ctx->b >> 8;
+#endif
 }

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([Checksum], [0.4], [vmfdez90@gmail.com])
+AC_INIT([Checksum], [0.5], [vmfdez90@gmail.com])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/adler.c])
 AC_CONFIG_HEADERS([config.h])
@@ -18,13 +18,15 @@ AC_HEADER_ASSERT
 AC_CHECK_HEADERS([fcntl.h stdint.h stdlib.h string.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
 AC_TYPE_UINT32_T
 
 # Checks for library functions.
 AC_FUNC_MMAP
-AC_CHECK_FUNCS([munmap])
+AC_CHECK_FUNCS([munmap strerror])
+AC_CHECK_LIB([crypto], [EVP_MD_CTX_new], [], [AC_MSG_FAILURE([Could not find OpenSSL >= 1.1.0])])
 
 AC_ARG_VAR(BLOCKSIZE, [Stream reader block size])
 

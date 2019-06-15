@@ -20,7 +20,7 @@ head -c1M $RAND > $TEMP2
 head -c512K $TEMP2 > $TEMP3
 head -c512K $RAND >> $TEMP3
 
-echo 1..14
+echo 1..16
 
 # Test
 
@@ -35,6 +35,12 @@ echo "ok - Checksum of 5.4 KB file"
 
 [ $($CHECKSUM -m $TEMP1) = "bf33a95a" ] || echo -n "not "
 echo "ok - Checksum of 5.4 KB file using memory mapping"
+
+[ $($CHECKSUM -s $TEMP1) = "19096e4aea51a1643957060974594fd6ba17afa3" ] || echo -n "not "
+echo "ok - SHA-1 Checksum of 5.4 KB file"
+
+[ $($CHECKSUM -sm $TEMP1) = "19096e4aea51a1643957060974594fd6ba17afa3" ] || echo -n "not "
+echo "ok - SHA-1 Checksum of 5.4 KB file using memory mapping"
 
 (head --bytes=1G $RAND | $CHECKSUM - > $NULL) || echo -n "not "
 echo "ok - Checksum of 1 GB random data"

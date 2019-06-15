@@ -18,21 +18,29 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <openssl/evp.h>
 
 #define HERE __func__, __FILE__, __LINE__
 
 typedef enum { METH_STREAM, METH_MMAP } method_t;
 typedef enum { ACTION_CHECKSUM, ACTION_COMPARE } action_t;
+typedef enum { ALGORITHM_ADLER32, ALGORITHM_SHA1 } algorithm_t;
 
 typedef struct {
     uint32_t a;
     uint32_t b;
 } adler32_t;
 
+typedef struct {
+    algorithm_t algorithm;
+    unsigned char digest[EVP_MAX_MD_SIZE];
+    unsigned int size;
+} hash_t;
+
 extern const adler32_t ADLER32_INITIALIZER;
 
 /* Compute Adler-32 checksum */
-uint32_t adler32(unsigned char * data, size_t len);
+void adler32(unsigned char * data, size_t len, unsigned char digest[4]);
 
 /* Initialize Adler-32 context */
 void adler32_init(adler32_t * ctx);
@@ -40,14 +48,14 @@ void adler32_init(adler32_t * ctx);
 /* Compute partial Adler-32 checksum */
 void adler32_update(adler32_t * ctx, unsigned char * data, size_t len);
 
-/* Return the Adler-32 message digest */
-uint32_t adler32_final(const adler32_t * ctx);
+/* Get the Adler-32 message digest */
+void adler32_final(const adler32_t * ctx, unsigned char digest[4]);
 
 /* Compute checksum via file streaming */
-uint32_t ck_stream(int fd);
+void ck_stream(hash_t * hash, int fd);
 
 /* Compute checksum via file mapping */
-uint32_t ck_mmap(int fd);
+void ck_mmap(hash_t * hash, int fd);
 
 /* Compare two files via file streaming */
 int ck_cmp_stream(int fd1, int fd2);

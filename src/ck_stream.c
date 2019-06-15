@@ -9,18 +9,32 @@
 #endif
 
 /* Compute checksum via file streaming */
-uint32_t ck_stream(int fd) {
+void ck_stream(hash_t * hash, int fd) {
     unsigned char data[BLOCKSIZE];
-    adler32_t ctx;
     ssize_t size;
 
-    adler32_init(&ctx);
+    if (hash->algorithm == ALGORITHM_ADLER32) {
+        adler32_t ctx;
+        adler32_init(&ctx);
 
-    while ((size = read(fd, data, BLOCKSIZE)) > 0) {
-        adler32_update(&ctx, data, size);
+        while ((size = read(fd, data, BLOCKSIZE)) > 0) {
+            adler32_update(&ctx, data, size);
+        }
+
+        adler32_final(&ctx, hash->digest);
+        hash->size = 4;
+    } else {
+        /* ALGORITHM_SHA1 */
+        EVP_MD_CTX * ctx = EVP_MD_CTX_new();
+        EVP_DigestInit(ctx, EVP_sha1());
+
+        while ((size = read(fd, data, BLOCKSIZE)) > 0) {
+            EVP_DigestUpdate(ctx, data, size);
+        }
+
+        EVP_DigestFinal_ex(ctx, hash->digest, &hash->size);
+        EVP_MD_CTX_free(ctx);
     }
-
-    return adler32_final(&ctx);
 }
 
 /* Compare two files via file streaming */

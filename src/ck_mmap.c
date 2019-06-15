@@ -3,7 +3,7 @@
 #include "checksum.h"
 
 /* Compute checksum via file mapping */
-uint32_t ck_mmap(int fd) {
+void ck_mmap(hash_t * hash, int fd) {
     size_t size = ck_fsize(fd);
     unsigned char * data = mmap(NULL, size, PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0);
 
@@ -11,9 +11,20 @@ uint32_t ck_mmap(int fd) {
         ck_error("Cannot map file into memory");
     }
 
-    uint32_t checksum = adler32(data, size);
+    if (hash->algorithm == ALGORITHM_ADLER32) {
+        adler32(data, size, hash->digest);
+        hash->size = 4;
+    } else {
+        /* ALGORITHM_SHA1 */
+        EVP_MD_CTX * ctx = EVP_MD_CTX_new();
+
+        EVP_DigestInit(ctx, EVP_sha1());
+        EVP_DigestUpdate(ctx, data, size);
+        EVP_DigestFinal_ex(ctx, hash->digest, &hash->size);
+        EVP_MD_CTX_free(ctx);
+    }
+
     munmap(data, size);
-    return checksum;
 }
 
 /* Compare two files via file mapping */

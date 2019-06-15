@@ -6,6 +6,7 @@ static const char * file_name;
 static const char * file_name_cmp;
 static action_t action = ACTION_CHECKSUM;
 static method_t method = METH_STREAM;
+static algorithm_t algorithm = ALGORITHM_ADLER32;
 
 /* Parse arguments */
 static void parse_options(int argc, char ** argv);
@@ -29,7 +30,20 @@ int main(int argc, char ** argv) {
             method = METH_STREAM;
         }
 
-        printf("%x\n", method == METH_STREAM ? ck_stream(fd) : ck_mmap(fd));
+        hash_t hash = { .algorithm = algorithm };
+
+        if (method == METH_STREAM) {
+            ck_stream(&hash, fd);
+        } else {
+            /* METH_MMAP */
+            ck_mmap(&hash, fd);
+        }
+
+        for (int i = 0; i < hash.size; ++i) {
+            printf("%02x", hash.digest[i]);
+        }
+
+        printf("\n");
         break;
 
     case ACTION_COMPARE:
@@ -56,7 +70,7 @@ int main(int argc, char ** argv) {
 void parse_options(int argc, char ** argv) {
     int c;
 
-    while ((c = getopt(argc, argv, "chm")) != -1) {
+    while ((c = getopt(argc, argv, "chms")) != -1) {
         switch (c) {
         case 'c':
             action = ACTION_COMPARE;
@@ -68,6 +82,10 @@ void parse_options(int argc, char ** argv) {
 
         case 'm':
             method = METH_MMAP;
+            break;
+
+        case 's':
+            algorithm = ALGORITHM_SHA1;
             break;
 
         case '?':
@@ -120,6 +138,7 @@ void help(int status) {
         "   -h  Show this help.\n"
         "   -c  Compare two files."
         "   -m  Use memory mapping method.\n"
+        "   -s  Use SHA-1 hash algorithm.\n"
     );
 
     exit(status);

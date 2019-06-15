@@ -75,6 +75,7 @@ If no file specified or file "-" is given, checksum reads _stdin_.
 |`-c`|Compare two files.|
 |`-h`|Show help.|
 |`-m`|Use memory mapping method.|
+|`-s`|Use SHA-1 hash algorithm.|
 
 ## Performance test
 
