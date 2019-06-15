@@ -25,7 +25,7 @@ void ck_stream(hash_t * hash, int fd) {
         hash->size = 4;
     } else {
         /* ALGORITHM_SHA1 */
-        EVP_MD_CTX * ctx = EVP_MD_CTX_new();
+        EVP_MD_CTX * ctx = EVP_MD_CTX_create();
         EVP_DigestInit(ctx, EVP_sha1());
 
         while ((size = read(fd, data, BLOCKSIZE)) > 0) {
@@ -33,7 +33,7 @@ void ck_stream(hash_t * hash, int fd) {
         }
 
         EVP_DigestFinal_ex(ctx, hash->digest, &hash->size);
-        EVP_MD_CTX_free(ctx);
+        EVP_MD_CTX_destroy(ctx);
     }
 }
 

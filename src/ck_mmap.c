@@ -16,12 +16,12 @@ void ck_mmap(hash_t * hash, int fd) {
         hash->size = 4;
     } else {
         /* ALGORITHM_SHA1 */
-        EVP_MD_CTX * ctx = EVP_MD_CTX_new();
+        EVP_MD_CTX * ctx = EVP_MD_CTX_create();
 
         EVP_DigestInit(ctx, EVP_sha1());
         EVP_DigestUpdate(ctx, data, size);
         EVP_DigestFinal_ex(ctx, hash->digest, &hash->size);
-        EVP_MD_CTX_free(ctx);
+        EVP_MD_CTX_destroy(ctx);
     }
 
     munmap(data, size);

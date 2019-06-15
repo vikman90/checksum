@@ -26,7 +26,7 @@ AC_TYPE_UINT32_T
 # Checks for library functions.
 AC_FUNC_MMAP
 AC_CHECK_FUNCS([munmap strerror])
-AC_CHECK_LIB([crypto], [EVP_MD_CTX_new], [], [AC_MSG_FAILURE([Could not find OpenSSL >= 1.1.0])])
+AC_CHECK_LIB([crypto], [EVP_DigestInit], [], [AC_MSG_FAILURE([Could not find OpenSSL])])
 
 AC_ARG_VAR(BLOCKSIZE, [Stream reader block size])
 
