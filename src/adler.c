@@ -11,36 +11,12 @@ const adler32_t ADLER32_INITIALIZER = { .a = 1, .b = 0 };
 
 /* Compute Adler-32 checksum */
 void adler32(unsigned char * data, size_t len, unsigned char digest[4]) {
-    uint32_t a = 1, b = 0;
-    size_t top;
+    adler32_t ctx = ADLER32_INITIALIZER;
 
     assert(data != NULL);
 
-    // Process each byte of the data in order
-    for (size_t i = 0; i < len; i = top) {
-        top = i + ADLER_CHUNK;
-        top = top > len ? len : top;
-
-        for (size_t j = i; j < top; ++j) {
-            a += data[j];
-            b += a;
-        }
-
-        a %= MOD_ADLER;
-        b %= MOD_ADLER;
-    }
-
-#if __FLOAT_WORD_ORDER__ == __ORDER_LITTLE_ENDIAN__
-    digest[0] = b >> 8;
-    digest[1] = b & 0xFF;
-    digest[2] = a >> 8;
-    digest[3] = a & 0xFF;
-#else
-    digest[0] = a & 0xFF;
-    digest[1] = a >> 8;
-    digest[2] = b & 0xFF;
-    digest[3] = b >> 8;
-#endif
+    adler32_update(&ctx, data, len);
+    adler32_final(&ctx, digest);
 }
 
 /* Initialize Adler-32 context */
