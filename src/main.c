@@ -70,7 +70,7 @@ int main(int argc, char ** argv) {
 void parse_options(int argc, char ** argv) {
     int c;
 
-    while ((c = getopt(argc, argv, "chms")) != -1) {
+    while ((c = getopt(argc, argv, "chmrs")) != -1) {
         switch (c) {
         case 'c':
             action = ACTION_COMPARE;
@@ -82,6 +82,10 @@ void parse_options(int argc, char ** argv) {
 
         case 'm':
             method = METH_MMAP;
+            break;
+
+        case 'r':
+            algorithm = ALGORITHM_CRC32;
             break;
 
         case 's':
@@ -138,6 +142,7 @@ void help(int status) {
         "   -h  Show this help.\n"
         "   -c  Compare two files."
         "   -m  Use memory mapping method.\n"
+        "   -r  Use CRC-32 hash algorithm.\n"
         "   -s  Use SHA-1 hash algorithm.\n"
     );
 

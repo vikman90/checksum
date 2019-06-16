@@ -23,7 +23,7 @@ void ck_stream(hash_t * hash, int fd) {
 
         adler32_final(&ctx, hash->digest);
         hash->size = 4;
-    } else {
+    } else if (hash->algorithm == ALGORITHM_SHA1) {
         /* ALGORITHM_SHA1 */
         EVP_MD_CTX * ctx = EVP_MD_CTX_create();
         EVP_DigestInit(ctx, EVP_sha1());
@@ -34,6 +34,16 @@ void ck_stream(hash_t * hash, int fd) {
 
         EVP_DigestFinal_ex(ctx, hash->digest, &hash->size);
         EVP_MD_CTX_destroy(ctx);
+    } else {
+        /* ALGORITHM_CRC32 */
+        uint32_t ctx = CRC32_INITIALIZER;
+
+        while ((size = read(fd, data, BLOCKSIZE)) > 0) {
+            ctx = crc32_update(ctx, data, size);
+        }
+
+        crc32_final(ctx, hash->digest);
+        hash->size = 4;
     }
 }
 

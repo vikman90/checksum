@@ -75,6 +75,7 @@ If no file specified or file "-" is given, checksum reads _stdin_.
 |`-c`|Compare two files.|
 |`-h`|Show help.|
 |`-m`|Use memory mapping method.|
+|`-r`|Use CRC-32 hash algorithm.|
 |`-s`|Use SHA-1 hash algorithm.|
 
 ## Performance test
@@ -118,6 +119,18 @@ Analyzing file comparison times.
 |File streaming|0.482 s|1.845 s|
 |Memory mapping|1.568 s|5.639 s|
 
+### Version 0.6
+
+Comparing different hash algorithms with a 1500 MB file.
+
+|Algorithm|File streaming|Memory mapping|
+|---|---|---|
+|Adler-32|2.390 s|4.390 s|
+|CRC-32|5.036 s|6.827 s|
+|SHA-1|2.939 s|5.033 s|
+
 ## References
 
 - Wikipedia: [Adler-32](https://en.wikipedia.org/wiki/Adler-32)
+- Wikipedia: [Cyclic redundancy check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check)
+- Wikipedia: [SHA-1](https://en.wikipedia.org/wiki/SHA-1)

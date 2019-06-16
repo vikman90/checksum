@@ -24,7 +24,7 @@
 
 typedef enum { METH_STREAM, METH_MMAP } method_t;
 typedef enum { ACTION_CHECKSUM, ACTION_COMPARE } action_t;
-typedef enum { ALGORITHM_ADLER32, ALGORITHM_SHA1 } algorithm_t;
+typedef enum { ALGORITHM_ADLER32, ALGORITHM_SHA1, ALGORITHM_CRC32 } algorithm_t;
 
 typedef struct {
     uint32_t a;
@@ -50,6 +50,14 @@ void adler32_update(adler32_t * ctx, unsigned char * data, size_t len);
 
 /* Get the Adler-32 message digest */
 void adler32_final(const adler32_t * ctx, unsigned char digest[4]);
+
+extern const uint32_t CRC32_INITIALIZER;
+
+/* Compute CRC-32 checksum */
+uint32_t crc32_update(uint32_t ctx, const unsigned char * data, size_t len);
+
+/* Get the CRC-32 message digest */
+void crc32_final(uint32_t ctx, unsigned char digest[4]);
 
 /* Compute checksum via file streaming */
 void ck_stream(hash_t * hash, int fd);

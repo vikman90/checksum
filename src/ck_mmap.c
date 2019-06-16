@@ -14,7 +14,7 @@ void ck_mmap(hash_t * hash, int fd) {
     if (hash->algorithm == ALGORITHM_ADLER32) {
         adler32(data, size, hash->digest);
         hash->size = 4;
-    } else {
+    } else if (hash->algorithm == ALGORITHM_SHA1) {
         /* ALGORITHM_SHA1 */
         EVP_MD_CTX * ctx = EVP_MD_CTX_create();
 
@@ -22,6 +22,11 @@ void ck_mmap(hash_t * hash, int fd) {
         EVP_DigestUpdate(ctx, data, size);
         EVP_DigestFinal_ex(ctx, hash->digest, &hash->size);
         EVP_MD_CTX_destroy(ctx);
+    } else {
+        /* ALGORITHM_CRC32 */
+        uint32_t ctx = crc32_update(CRC32_INITIALIZER, data, size);
+        crc32_final(ctx, hash->digest);
+        hash->size = 4;
     }
 
     munmap(data, size);
